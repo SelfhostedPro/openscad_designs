@@ -1,8 +1,9 @@
 
-module imported_body () {
-    translate([-101,244,-20])
-    import("/home/user/dev/cad/openscad/instruments/guitar/electric-guitar-body-bc-rich-warlock-model_files/Full Bodies/Full Body.stl");
-}
+//module imported_body () {
+//    translate([-101,244,-20])
+//import("/Users/none/dev/cad/openscad/openscad_designs/instruments/guitar/electric-guitar-body-bc-rich-warlock-model_files/Full Bodies/Full Body.stl");
+//}
+
 
 module cutout(){
     difference(){
@@ -22,26 +23,25 @@ module cutout(){
         ]);
     }
 };
-//cutout();
-//imported_body();
+
 
 module imported_body(){
     union(){
         translate([-101,244,-20])
-        import("/home/user/dev/cad/openscad/instruments/guitar/electric-guitar-body-bc-rich-warlock-model_files/Main Body/Warlock Middle Top.stl");
+        import("/Users/none/dev/cad/openscad/openscad_designs/instruments/guitar/electric-guitar-body-bc-rich-warlock-model_files/Main Body/Warlock Middle Top.stl");
+
         translate([-1,27.45,-2.2])
         cube([52,80,4], center=true);
-    }
-    union(){
         translate([-101,264,-20])
-        import("/home/user/dev/cad/openscad/instruments/guitar/electric-guitar-body-bc-rich-warlock-model_files/Main Body/Warlock Middle Bottom.stl");
+        import("/Users/none/dev/cad/openscad/openscad_designs/instruments/guitar/electric-guitar-body-bc-rich-warlock-model_files/Main Body/Warlock Middle Bottom.stl");
+
         translate([-1,-44.5,-2.2])
         cube([52,64,4], center=true);
+        
+        // Fill in existing second humbucker
+        translate([-50,20,0])
+        cube([100,50,21.8]);
     }
 }
 
-difference(){
     imported_body();
-    //translate([50,0,0])
-    //cube([100,400,100], center=true);
-}

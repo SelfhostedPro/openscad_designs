@@ -5,13 +5,22 @@ include <Round-Anything/polyround.scad>
 
 // Include other scad files
 use <bridge.scad>
-use <core.scad>
-use <humbucker.scad>
+use <center.scad>
+use <pickups.scad>
 use <neck-connection.scad>
+use <right.scad>
+
+
+/* [Display] */
+// CSV list of parts to display (core,left,right,floyd_rose,neck_connection, humbucker)
+Parts = "center,floyd_rose,neck_connection";
 
 /* [Parts] */
-// CSV list of parts to display (core,left,right,floyd_rose,neck_connection, humbucker)
-Parts = "core,floyd_rose,neck_connection";
+// CSV List of pickup configuration (humbucker/single) (ie. "humbucker,single,single", "humbucker,humbucker")
+Pickups = ["humbucker", "single", "single"];
+
+// Which type of bridge (*ffloyd_rose = fixed floyd rose)
+Bridge = "ffloyd_rose"; // ["ffloyd_rose", "none"]
 
 /* [Printer] */
 // Tolerance for connections
@@ -23,22 +32,9 @@ DEBUG_MODEL = "false"; //[false,true,"HIGHLIGHT"]
 
 /* [Hidden] */
 
+
+
 body_p_left = polyRound(
-    [
-
-        //[46,27,35],
-        [ 45, -174, 0 ], // Bottom Connection
-
-        [ 58, -190, 9 ], [ 102, -143, 90 ],
-
-        [ 152, -129, 5 ], [ 158.5, -117, 25 ], [ 83, -33, 93 ],
-
-        [ 155, 93, 13 ], [ 63, 37.8, 80 ], [ 45, 59.8, 0 ], // Top Connection
-        //[28.5,-162,0],
-    ],
-    100);
-
-body_p_right = polyRound(
     [
         [ -45, 100, 5 ],
 
@@ -52,20 +48,14 @@ body_p_right = polyRound(
     ],
     60);
 
-module body_left()
-{
-    translate([ 0, 0, -9.915 ])
-        // color("blue")
-        linear_extrude(20, center = true) polygon(body_p_left);
-}
 
-module body_right()
+module body_left()
 {
     translate([ 0, 0, -9.915 ])
     {
         color("purple")
             // linear_extrude(30)
-            polygon(body_p_right);
+            polygon(body_p_left);
     }
 }
 
@@ -103,6 +93,10 @@ module imported_body()
         import("/Users/none/dev/cad/openscad/openscad_designs/instruments/guitar/headless-electric-guitar-v3-model_files/STL/BODY - UPPER LEFT.stl");
         // Core structure
         //import("/Users/none/Downloads/GUITAR V3 - Structure (no plate).stl");
+        //translate([ -157, 920, 10
+        //])
+    //import("/Users/none/Downloads/black_core.stl");
+
     }
 }
 
@@ -112,12 +106,13 @@ else if (DEBUG_MODEL == "HIGHLIGHT")
 #imported_body();
 
     show_parts = str_split(Parts, ",");
+    
 
 for (part = [0:len(show_parts)])
 {
-    if (show_parts[part] == "core")
+    if (show_parts[part] == "center")
     {
-        body_core(tol = Tolerance);
+        center(tol = Tolerance);
     }
     if (show_parts[part] == "left")
     {
@@ -125,11 +120,12 @@ for (part = [0:len(show_parts)])
     }
     if (show_parts[part] == "right")
     {
-        body_right();
+        translate([0,0,-7])
+        %body_right();
     }
     if (show_parts[part] == "floyd_rose")
     {
-        translate([ 0, -111.7, -10 ]) floyd_rose(cut=false,0.05);
+        translate([ -1, -109.9, -18.2 ]) floyd_rose(cut=false,0.05);
     }
     if (show_parts[part] == "neck_connection")
     {
@@ -137,6 +133,11 @@ for (part = [0:len(show_parts)])
     }
     if (show_parts[part] == "humbucker")
     {
-        translate([ 0, -70.5, 10.1 ]) humbucker(cut = false, holes = true, tol = Tolerance);
+        translate([ -2.5, -67, 10 ]) pickup_slider("humbucker",cut = false, top = true, right=true, tol = Tolerance);
+    }
+    if (show_parts[part] == "single")
+    {
+        translate([ -2.5, 55, 10 ]) #single(tol=0.05);
+        //translate([ -2.5, -67, 10 ]) pickup_slider("single",cut = false, top = true, right=true, tol = Tolerance);
     }
 }
